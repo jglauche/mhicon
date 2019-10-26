@@ -16,14 +16,12 @@ use elefren::helpers::cli;
 fn config_file() -> std::path::PathBuf {
 	let mut path = dirs::config_dir().unwrap();
 	path.push("mhicon");
-	let _res = create_path_if_not_exists(&path);
+
+	let res = std::fs::create_dir_all(&path);
+	res.unwrap_or_else(|_| panic!("cannot create path {:?}", path));
+
 	path.push("mastodon-data.toml");
 	path
-}
-
-fn create_path_if_not_exists(path: &std::path::PathBuf) -> Result <(), Box<dyn Error>> {
-	std::fs::create_dir_all(&path)?;
-	Ok(())
 }
 
 fn main() -> Result<(), Box<dyn Error>> {
