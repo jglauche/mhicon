@@ -27,7 +27,6 @@ fn create_path_if_not_exists(path: &std::path::PathBuf) -> Result <(), Box<dyn E
 }
 
 fn main() -> Result<(), Box<dyn Error>> {
-	println!("{:?}", config_file());
 	let mastodon = if let Ok(data) = elefren_toml::from_file(config_file()) {
 		Mastodon::from(data)
 	} else {
