@@ -17,8 +17,9 @@ fn config_file() -> std::path::PathBuf {
 	let mut path = dirs::config_dir().unwrap();
 	path.push("mhicon");
 
-	let res = std::fs::create_dir_all(&path);
-	res.unwrap_or_else(|_| panic!("cannot create path {:?}", path));
+	std::fs::create_dir_all(&path).unwrap_or_else(|_|
+		panic!("cannot create path {:?}", path)
+	);
 
 	path.push("mastodon-data.toml");
 	path
