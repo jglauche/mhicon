@@ -20,7 +20,7 @@ fn main() -> Result<(), Box<dyn Error>> {
 		register()?
 	};
 
-	let icons = ["\u{2705}","\u{2705}/\u{26AA}", "\u{26AA}", "\u{26AA}/\u{1F534}" ,"\u{1F534}"];
+	let icons = ["\u{2705}","\u{2705}/\u{26AA}", "\u{26AA}", "\u{26AA}/\u{1F534}", "\u{1F534}"];
 
 	println!("verifying credentials...");
 	let you = mastodon.verify_credentials()?;
@@ -44,23 +44,23 @@ fn main() -> Result<(), Box<dyn Error>> {
 		io::stdin().read_line(&mut input)?;
 		match input.trim(){
 			"1" => {
-				update_nick(mastodon, me+icons[0])?;
+				update_nick(&mastodon, me+icons[0])?;
 				break;
 			},
 			"2" => {
-				update_nick(mastodon, me+icons[1])?;
+				update_nick(&mastodon, me+icons[1])?;
 				break;
 			},
 			"3" => {
-				update_nick(mastodon, me+icons[2])?;
+				update_nick(&mastodon, me+icons[2])?;
 				break;
 			},
 			"4" => {
-				update_nick(mastodon, me+icons[3])?;
+				update_nick(&mastodon, me+icons[3])?;
 				break;
 			},
 			"5" => {
-				update_nick(mastodon, me+icons[4])?;
+				update_nick(&mastodon, me+icons[4])?;
 				break;
 			},
 			"q" | "c" => { break; }
@@ -73,7 +73,7 @@ fn main() -> Result<(), Box<dyn Error>> {
 	Ok(())
 }
 
-fn update_nick(mastodon: Mastodon, nick: String) -> Result<(), Box<dyn Error>> {
+fn update_nick(mastodon: &elefren::Mastodon, nick: String) -> Result<(), Box<dyn Error>> {
 	let mut builder = UpdateCredsRequest::new();
 	builder.display_name(nick);
 	mastodon.update_credentials(&mut builder)?;
