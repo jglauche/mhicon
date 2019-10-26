@@ -1,4 +1,5 @@
 extern crate elefren;
+extern crate dirs;
 
 use std::io;
 use std::io::Write;
@@ -12,9 +13,22 @@ use elefren::helpers::cli;
 // use toml;
 
 
+fn config_file() -> std::path::PathBuf {
+	let mut path = dirs::config_dir().unwrap();
+	path.push("mhicon");
+	let _res = create_path_if_not_exists(&path);
+	path.push("mastodon-data.toml");
+	path
+}
+
+fn create_path_if_not_exists(path: &std::path::PathBuf) -> Result <(), Box<dyn Error>> {
+	std::fs::create_dir_all(&path)?;
+	Ok(())
+}
 
 fn main() -> Result<(), Box<dyn Error>> {
-	let mastodon = if let Ok(data) = elefren_toml::from_file("mastodon-data.toml") {
+	println!("{:?}", config_file());
+	let mastodon = if let Ok(data) = elefren_toml::from_file(config_file()) {
 		Mastodon::from(data)
 	} else {
 		register()?
@@ -94,7 +108,7 @@ fn register() -> Result<Mastodon, Box<dyn Error>> {
 	let mastodon = cli::authenticate(registration)?;
 
 	// Save app data for using on the next run.
-	elefren_toml::to_file(&*mastodon, "mastodon-data.toml")?;
+	elefren_toml::to_file(&*mastodon, config_file())?;
 
 	Ok(mastodon)
 }
