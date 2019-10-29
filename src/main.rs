@@ -10,8 +10,7 @@ use elefren::UpdateCredsRequest;
 use elefren::scopes::Scopes;
 use elefren::helpers::toml as elefren_toml;
 use elefren::helpers::cli;
-// use toml;
-
+use http::StatusCode;
 
 fn config_file() -> std::path::PathBuf {
 	let mut path = dirs::config_dir().unwrap();
@@ -93,7 +92,19 @@ fn update_nick(mastodon: &elefren::Mastodon, account: &elefren::entities::accoun
 			builder.field_attribute(&y.name, &y.value);
 		}
 	}
-	mastodon.update_credentials(&mut builder)?;
+	match mastodon.update_credentials(&mut builder){
+		Result::Err(elefren::Error::Client(e)) => {
+				match e {
+					// expecting BAD_REQUEST as mastodon handles parameter filtering badly. It still updates it but complains about unpermitted parameters
+					StatusCode::BAD_REQUEST => {},
+					_ => {
+						panic!("#{:?}", e);
+					}
+				}
+			},
+		_ => {},
+	}
+	println!("Badge has been updated!");
 	Ok(())
 }
 
