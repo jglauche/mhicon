@@ -9,4 +9,4 @@ edition = "2018"
 [dependencies]
 dirs = "2.0.2"
 toml = ""
-elefren = { version = "0.20.1", features = ["toml"] }
+elefren = { git = 'https://github.com/jglauche/elefren', features = ["toml"] }
