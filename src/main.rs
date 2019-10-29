@@ -36,7 +36,7 @@ fn main() -> Result<(), Box<dyn Error>> {
 
 	println!("verifying credentials...");
 	let you = mastodon.verify_credentials()?;
-	let mut me = String::from(you.display_name);
+	let mut me = String::from(&you.display_name);
 
 	for i in icons.iter(){
 		me = String::from(me.trim_end_matches(i));
@@ -56,23 +56,23 @@ fn main() -> Result<(), Box<dyn Error>> {
 		io::stdin().read_line(&mut input)?;
 		match input.trim(){
 			"1" => {
-				update_nick(&mastodon, me+icons[0])?;
+				update_nick(&mastodon, &you, me+icons[0])?;
 				break;
 			},
 			"2" => {
-				update_nick(&mastodon, me+icons[1])?;
+				update_nick(&mastodon, &you, me+icons[1])?;
 				break;
 			},
 			"3" => {
-				update_nick(&mastodon, me+icons[2])?;
+				update_nick(&mastodon, &you, me+icons[2])?;
 				break;
 			},
 			"4" => {
-				update_nick(&mastodon, me+icons[3])?;
+				update_nick(&mastodon, &you, me+icons[3])?;
 				break;
 			},
 			"5" => {
-				update_nick(&mastodon, me+icons[4])?;
+				update_nick(&mastodon, &you, me+icons[4])?;
 				break;
 			},
 			"q" | "c" => { break; }
@@ -85,9 +85,14 @@ fn main() -> Result<(), Box<dyn Error>> {
 	Ok(())
 }
 
-fn update_nick(mastodon: &elefren::Mastodon, nick: String) -> Result<(), Box<dyn Error>> {
+fn update_nick(mastodon: &elefren::Mastodon, account: &elefren::entities::account::Account, nick: String) -> Result<(), Box<dyn Error>> {
 	let mut builder = UpdateCredsRequest::new();
 	builder.display_name(nick);
+	for x in &account.fields {
+		for y in x {
+			builder.field_attribute(&y.name, &y.value);
+		}
+	}
 	mastodon.update_credentials(&mut builder)?;
 	Ok(())
 }
